@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EarnMax Admin Panel</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#07111f;
+  color:#fff;
+}
+header{
+  background:linear-gradient(135deg,#087f8c,#1769aa);
+  padding:22px;
+}
+header h1{margin:0;font-size:25px}
+header p{margin:6px 0 0;opacity:.85}
+
+.container{
+  padding:16px;
+  max-width:1100px;
+  margin:auto;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:12px;
+}
+
+.card{
+  background:#101d2d;
+  border:1px solid #26384d;
+  border-radius:16px;
+  padding:18px;
+}
+
+.card h3{
+  margin:0;
+  font-size:14px;
+  color:#aebdca;
+}
+
+.card strong{
+  display:block;
+  margin-top:10px;
+  font-size:25px;
+}
+
+nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  margin:18px 0;
+}
+
+nav button{
+  border:0;
+  background:#142437;
+  color:white;
+  padding:12px 16px;
+  border-radius:10px;
+  white-space:nowrap;
+}
+
+nav button.active{
+  background:#08a6b5;
+}
+
+.section{
+  display:none;
+}
+
+.section.active{
+  display:block;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  background:#101d2d;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+th,td{
+  padding:13px;
+  border-bottom:1px solid #26384d;
+  text-align:left;
+}
+
+th{
+  color:#8fdbe3;
+}
+
+button.action{
+  border:0;
+  border-radius:8px;
+  padding:8px 12px;
+  color:white;
+  background:#159447;
+  margin:2px;
+}
+
+button.reject{
+  background:#c73838;
+}
+
+.setting{
+  background:#101d2d;
+  padding:18px;
+  margin-bottom:12px;
+  border-radius:14px;
+}
+
+.coin{
+  color:#ffd54a;
+}
+
+.badge{
+  background:#193b46;
+  color:#7ee9ef;
+  padding:5px 9px;
+  border-radius:20px;
+}
+
+@media(max-width:600px){
+  table{font-size:12px}
+  th,td{padding:9px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>EarnMax Admin Panel</h1>
+  <p>Manage users, tasks, offers and withdrawals</p>
+</header>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Users</h3>
+<strong id="users">1,250</strong>
+</div>
+
+<div class="card">
+<h3>Active Tasks</h3>
+<strong id="tasks">24</strong>
+</div>
+
+<div class="card">
+<h3>Pending Withdrawals</h3>
+<strong id="withdrawals">18</strong>
+</div>
+
+<div class="card">
+<h3>Today's Revenue</h3>
+<strong>₹2,450</strong>
+</div>
+
+</div>
+
+<nav>
+<button class="active" onclick="show('dashboard',this)">Dashboard</button>
+<button onclick="show('usersPage',this)">Users</button>
+<button onclick="show('tasksPage',this)">Tasks</button>
+<button onclick="show('offersPage',this)">Offers</button>
+<button onclick="show('withdrawPage',this)">Withdrawals</button>
+<button onclick="show('transactions',this)">Transactions</button>
+<button onclick="show('settings',this)">Settings</button>
+</nav>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+
+<div class="card">
+<h2>Welcome to EarnMax 👋</h2>
+<p>100 Coins = ₹1</p>
+<p>Minimum withdrawal = <span class="coin">1,000 Coins</span> (₹10)</p>
+</div>
+
+</div>
+
+<!-- USERS -->
+
+<div id="usersPage" class="section">
+
+<div class="card">
+<h2>Users</h2>
+
+<table>
+<tr>
+<th>User</th>
+<th>Email</th>
+<th>Coins</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Rahul</td>
+<td>rahul@example.com</td>
+<td class="coin">4,850</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+<tr>
+<td>Amit</td>
+<td>amit@example.com</td>
+<td class="coin">1,250</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+<tr>
+<td>Neha</td>
+<td>neha@example.com</td>
+<td class="coin">8,400</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+<!-- TASKS -->
+
+<div id="tasksPage" class="section">
+
+<div class="card">
+<h2>Tasks</h2>
+
+<table>
+<tr>
+<th>Task</th>
+<th>Reward</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Install Demo App</td>
+<td class="coin">500 Coins</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+<tr>
+<td>Complete Survey</td>
+<td class="coin">800 Coins</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+<tr>
+<td>Watch Tutorial</td>
+<td class="coin">200 Coins</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+<!-- OFFERS -->
+
+<div id="offersPage" class="section">
+
+<div class="card">
+<h2>Offerwall</h2>
+
+<table>
+<tr>
+<th>Offer</th>
+<th>Reward</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Game Level 10</td>
+<td class="coin">2,000 Coins</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+<tr>
+<td>Survey Offer</td>
+<td class="coin">1,000 Coins</td>
+<td><span class="badge">Active</span></td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+<!-- WITHDRAWALS -->
+
+<div id="withdrawPage" class="section">
+
+<div class="card">
+<h2>Pending Withdrawals</h2>
+
+<table>
+<tr>
+<th>User</th>
+<th>Coins</th>
+<th>Amount</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>Rahul</td>
+<td class="coin">2,000</td>
+<td>₹20</td>
+<td>
+<button class="action" onclick="approve(this)">Approve</button>
+<button class="action reject" onclick="reject(this)">Reject</button>
+</td>
+</tr>
+
+<tr>
+<td>Amit</td>
+<td class="coin">5,000</td>
+<td>₹50</td>
+<td>
+<button class="action" onclick="approve(this)">Approve</button>
+<button class="action reject" onclick="reject(this)">Reject</button>
+</td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+<!-- TRANSACTIONS -->
+
+<div id="transactions" class="section">
+
+<div class="card">
+<h2>Transactions</h2>
+
+<table>
+<tr>
+<th>User</th>
+<th>Type</th>
+<th>Coins</th>
+</tr>
+
+<tr>
+<td>Rahul</td>
+<td>Task Reward</td>
+<td class="coin">+500</td>
+</tr>
+
+<tr>
+<td>Amit</td>
+<td>Offer Reward</td>
+<td class="coin">+1,000</td>
+</tr>
+
+<tr>
+<td>Neha</td>
+<td>Withdrawal</td>
+<td>-2,000</td>
+</tr>
+
+</table>
+</div>
+
+</div>
+
+<!-- SETTINGS -->
+
+<div id="settings" class="section">
+
+<div class="setting">
+<h3>Coin Conversion</h3>
+<p><b>100 Coins = ₹1</b></p>
+</div>
+
+<div class="setting">
+<h3>Minimum Withdrawal</h3>
+<p><b>1,000 Coins = ₹10</b></p>
+</div>
+
+<div class="setting">
+<h3>App Name</h3>
+<p><b>EarnMax</b></p>
+</div>
+
+<div class="setting">
+<h3>Reward Verification</h3>
+<p>Rewards should be credited only after verified task/offer completion.</p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function show(id,btn){
+
+document.querySelectorAll(".section")
+.forEach(x=>x.classList.remove("active"));
+
+document.getElementById(id)
+.classList.add("active");
+
+document.querySelectorAll("nav button")
+.forEach(x=>x.classList.remove("active"));
+
+btn.classList.add("active");
+
+}
+
+function approve(btn){
+
+btn.parentElement.parentElement.style.opacity="0.4";
+
+alert("Demo: Withdrawal approved.");
+
+}
+
+function reject(btn){
+
+btn.parentElement.parentElement.style.opacity="0.4";
+
+alert("Demo: Withdrawal rejected.");
+
+}
+
+</script>
+
+</body>
+  </html>
