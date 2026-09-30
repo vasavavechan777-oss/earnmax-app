@@ -1,12 +1,301 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EarnMax App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#087fdb">
+  <title>EarnMax — Earn Coins</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef5ff;color:#10233f}
+    .wrap{max-width:960px;margin:auto;padding:16px}
+    header{background:linear-gradient(135deg,#087fdb,#14b8a6);color:#fff;border-radius:22px;padding:22px;box-shadow:0 10px 30px #087fdb22}
+    header h1{margin:0 0 5px;font-size:30px}
+    header p{margin:0 0 18px;opacity:.92}
+    .coins{font-size:30px;font-weight:800}
+    .rate{font-size:13px;opacity:.9}
+    .nav{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+    button{border:0;border-radius:11px;padding:11px 15px;background:#087fdb;color:#fff;font-weight:700;cursor:pointer}
+    button:hover{opacity:.9}
+    button.secondary{background:#10233f}
+    button.danger{background:#b42318}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    input{display:block;padding:12px;border:1px solid #ccd8e8;border-radius:10px;width:100%;margin:7px 0;background:#fff}
+    .card{background:#fff;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #0001}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+    .stat{background:#f7fbff;border:1px solid #e5edf7;border-radius:14px;padding:14px}
+    .stat b{display:block;font-size:20px;margin-top:4px}
+    .item{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #edf1f6;padding:14px 0}
+    .item:first-child{border-top:0}
+    .muted{color:#64748b}
+    .pill{display:inline-block;padding:6px 10px;border-radius:99px;background:#e7f7f4;color:#087f6e;font-size:13px}
+    .hidden{display:none!important}
+    .message{min-height:20px;margin:8px 0 0;font-weight:600}
+    .success{color:#087f6e}.error{color:#b42318}
+    .actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+    footer{padding:10px 0 25px;text-align:center;color:#64748b;font-size:13px}
+    @media(max-width:560px){.item{align-items:flex-start;flex-direction:column}.item button{width:100%}}
+  </style>
 </head>
 <body>
-  <h1>EarnMax App</h1>
-  <p>Website successfully running!</p>
+<div class="wrap">
+  <header>
+    <h1>🪙 EarnMax</h1>
+    <p>Tasks • Offers • Coins • Wallet</p>
+    <div class="coins" id="balance">0 Coins</div>
+    <div class="rate">100 Coins = ₹1</div>
+  </header>
+
+  <nav class="nav" aria-label="Main navigation">
+    <button class="secondary" onclick="show('home')">Home</button>
+    <button class="secondary" onclick="show('tasks')">Tasks</button>
+    <button class="secondary" onclick="show('offers')">Offers</button>
+    <button class="secondary" onclick="show('wallet')">Wallet</button>
+    <button class="secondary" onclick="show('profile')">Profile</button>
+    <button class="danger" onclick="logout()">Logout</button>
+  </nav>
+
+  <section id="login" class="card">
+    <h2>Login / Register</h2>
+    <p class="muted">Create a demo account or login to an existing account.</p>
+    <input id="name" placeholder="Name (register ke liye)" autocomplete="name">
+    <input id="email" placeholder="Email" type="email" autocomplete="email">
+    <input id="pass" placeholder="Password" type="password" autocomplete="current-password">
+    <div class="actions">
+      <button onclick="register()">Register</button>
+      <button class="secondary" onclick="login()">Login</button>
+    </div>
+    <p id="msg" class="message muted"></p>
+  </section>
+
+  <section id="home" class="card hidden">
+    <h2>Welcome 👋</h2>
+    <p>Verified demo tasks/offers complete karke Coins earn karein.</p>
+    <span class="pill">Demo mode</span>
+    <div class="grid" style="margin-top:14px">
+      <div class="stat">Conversion<b>100 Coins = ₹1</b></div>
+      <div class="stat">Minimum withdrawal<b>1,000 Coins</b></div>
+    </div>
+  </section>
+
+  <section id="tasks" class="card hidden">
+    <h2>Tasks</h2>
+    <p class="muted">Start and complete a task using the development simulator.</p>
+    <div id="taskList"><p class="muted">Loading...</p></div>
+  </section>
+
+  <section id="offers" class="card hidden">
+    <h2>Offerwall</h2>
+    <p class="muted">Available demo offers from the backend.</p>
+    <div id="offerList"><p class="muted">Loading...</p></div>
+  </section>
+
+  <section id="wallet" class="card hidden">
+    <h2>Wallet</h2>
+    <div id="walletBox"><p class="muted">Loading...</p></div>
+    <hr style="border:0;border-top:1px solid #edf1f6;margin:18px 0">
+    <h3>Withdrawal Request</h3>
+    <input id="withdrawCoins" type="number" min="1000" step="1" placeholder="Coins (minimum 1000)">
+    <button onclick="withdraw()">Request Withdrawal</button>
+    <p class="muted">Demo request only. Real payout requires a payment provider and applicable compliance checks.</p>
+  </section>
+
+  <section id="profile" class="card hidden">
+    <h2>Profile</h2>
+    <div id="profileBox"><p class="muted">Loading...</p></div>
+  </section>
+
+  <footer>EarnMax local development demo • Rewards are simulated for development.</footer>
+</div>
+
+<script>
+  let token = localStorage.getItem("earnmax_token") || "";
+  const $ = id => document.getElementById(id);
+
+  function escapeHtml(value){
+    return String(value ?? "").replace(/[&<>'"]/g, ch => ({
+      "&":"&amp;", "<":"&lt;", ">":"&gt;", "'":"&#39;", '"':"&quot;"
+    }[ch]));
+  }
+
+  async function api(url, options = {}){
+    const opts = {...options, headers:{...(options.headers || {})}};
+    opts.headers["Content-Type"] = "application/json";
+    if(token) opts.headers.Authorization = "Bearer " + token;
+
+    const response = await fetch(url, opts);
+    let data = {};
+    try { data = await response.json(); } catch (_) {}
+    if(!response.ok) throw new Error(data.error || "Something went wrong");
+    return data;
+  }
+
+  function setMessage(text, type="muted"){
+    $("msg").textContent = text;
+    $("msg").className = "message " + type;
+  }
+
+  function show(id){
+    if(id !== "login" && !token){
+      id = "login";
+      setMessage("Please login or register first.", "error");
+    }
+
+    ["login","home","tasks","offers","wallet","profile"].forEach(section => {
+      $(section).classList.toggle("hidden", section !== id);
+    });
+
+    if(id === "tasks") loadTasks();
+    if(id === "offers") loadOffers();
+    if(id === "wallet") loadWallet();
+    if(id === "profile") loadProfile();
+  }
+
+  async function register(){
+    try{
+      const name = $("name").value.trim();
+      const email = $("email").value.trim();
+      const password = $("pass").value;
+      if(!name || !email || !password) throw new Error("Name, email and password required");
+
+      const data = await api("/api/register", {
+        method:"POST",
+        body:JSON.stringify({name,email,password})
+      });
+      token = data.token;
+      localStorage.setItem("earnmax_token", token);
+      setMessage("Registration successful.", "success");
+      await refresh();
+    }catch(error){ setMessage(error.message, "error"); }
+  }
+
+  async function login(){
+    try{
+      const email = $("email").value.trim();
+      const password = $("pass").value;
+      if(!email || !password) throw new Error("Email and password required");
+
+      const data = await api("/api/login", {
+        method:"POST",
+        body:JSON.stringify({email,password})
+      });
+      token = data.token;
+      localStorage.setItem("earnmax_token", token);
+      setMessage("Login successful.", "success");
+      await refresh();
+    }catch(error){ setMessage(error.message, "error"); }
+  }
+
+  async function refresh(){
+    show("home");
+    await loadWallet();
+  }
+
+  async function loadTasks(){
+    try{
+      const tasks = await api("/api/tasks");
+      $("taskList").innerHTML = tasks.length ? tasks.map(item => `
+        <div class="item">
+          <div><b>${escapeHtml(item.title)}</b><br><span class="muted">${item.reward} Coins</span></div>
+          <button onclick="complete('task','${escapeHtml(item.id)}')">Complete Demo</button>
+        </div>
+      `).join("") : `<p class="muted">No tasks available.</p>`;
+    }catch(error){ $("taskList").innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`; }
+  }
+
+  async function loadOffers(){
+    try{
+      const offers = await api("/api/offers");
+      $("offerList").innerHTML = offers.length ? offers.map(item => `
+        <div class="item">
+          <div><b>${escapeHtml(item.title)}</b><br><span class="muted">${item.reward} Coins</span></div>
+          <button onclick="complete('offer','${escapeHtml(item.id)}')">Complete Demo</button>
+        </div>
+      `).join("") : `<p class="muted">No offers available.</p>`;
+    }catch(error){ $("offerList").innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`; }
+  }
+
+  async function complete(kind, id){
+    try{
+      const endpoint = kind === "task" ? "tasks" : "offers";
+      await api(`/api/${endpoint}/${encodeURIComponent(id)}/start`, {method:"POST"});
+      const result = await api("/api/dev/complete", {
+        method:"POST",
+        body:JSON.stringify({kind,id})
+      });
+      alert(`+${result.coins} Coins added`);
+      await loadWallet();
+    }catch(error){ alert(error.message); }
+  }
+
+  async function loadWallet(){
+    try{
+      const wallet = await api("/api/wallet");
+      $("balance").textContent = wallet.available + " Coins";
+      $("walletBox").innerHTML = `
+        <div class="grid">
+          <div class="stat">Available<b>${wallet.available} Coins</b></div>
+          <div class="stat">Pending<b>${wallet.pending} Coins</b></div>
+          <div class="stat">Total Earned<b>${wallet.totalEarned} Coins</b></div>
+          <div class="stat">Withdrawn<b>${wallet.withdrawn} Coins</b></div>
+        </div>
+        <p><span class="pill">${escapeHtml(wallet.rate)}</span> &nbsp; <span class="pill">Minimum: ${wallet.minimum} Coins</span></p>
+      `;
+    }catch(error){
+      $("balance").textContent = "0 Coins";
+      if(error.message === "Login required") show("login");
+    }
+  }
+
+  async function withdraw(){
+    try{
+      const coins = Number($("withdrawCoins").value);
+      if(!Number.isInteger(coins) || coins < 1000) throw new Error("Minimum withdrawal is 1,000 Coins");
+      const result = await api("/api/withdraw", {
+        method:"POST",
+        body:JSON.stringify({coins})
+      });
+      alert(`Withdrawal request created: ${result.status}`);
+      $("withdrawCoins").value = "";
+      await loadWallet();
+    }catch(error){ alert(error.message); }
+  }
+
+  async function loadProfile(){
+    try{
+      const data = await api("/api/me");
+      $("profileBox").innerHTML = `
+        <p><b>Name:</b> ${escapeHtml(data.user.name)}</p>
+        <p><b>Email:</b> ${escapeHtml(data.user.email)}</p>
+        <button class="danger" onclick="logout()">Logout</button>
+      `;
+    }catch(error){
+      if(error.message === "Login required") logout();
+      else $("profileBox").innerHTML = `<p class="error">${escapeHtml(error.message)}</p>`;
+    }
+  }
+
+  function logout(){
+    token = "";
+    localStorage.removeItem("earnmax_token");
+    $("balance").textContent = "0 Coins";
+    show("login");
+    setMessage("You have been logged out.", "success");
+  }
+
+  // Validate the saved token on page load instead of trusting localStorage blindly.
+  async function init(){
+    if(!token){ show("login"); return; }
+    try{
+      await api("/api/me");
+      await refresh();
+    }catch(_){
+      logout();
+    }
+  }
+
+  init();
+</script>
 </body>
-</html>
+  </html>
+  
